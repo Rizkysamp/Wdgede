@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prediksi Kecil/Besar 9 Dadu</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #888888;
+  font-family: 'Arial', sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  background: #555;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  box-sizing: border-box;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+header h2 {
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+header button {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: none;
+  background: #777;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+header button:hover { background: #999; }
+
+input {
+  padding: 12px;
+  border: none;
+  width: 180px;
+  font-size: 16px;
+  border-radius: 12px; /* input bulat */
+}
+button.prediksiBtn {
+  padding: 12px 25px;
+  border-radius: 12px; /* tombol bulat */
+  border: none;
+  background: #ffb400;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 16px;
+}
+button.prediksiBtn:hover { background: #ffa500; }
+
+.icon {
+  font-size: 80px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.6s ease;
+}
+.icon.show { opacity: 1; transform: translateY(0); }
+
+.prediksi-text {
+  font-size: 32px;
+  font-weight: bold;
+  background: linear-gradient(120deg,#ffd700,#ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: fadeInText 1s ease forwards;
+}
+@keyframes fadeInText {
+  0% { opacity: 0; transform: translateY(-10px);}
+  100% { opacity: 1; transform: translateY(0);}
+}
+
+.kata-random {
+  font-size: 16px;
+  font-style: italic;
+  color: #ffd700;
+  text-align: center;
+}
+
+/* Motivasi selalu terlihat */
+.motivasi {
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 12px;
+}
+
+/* History / Last Win */
+.lastwin {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ccc;
+  text-align: center;
+}
+
+copyright {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #aaa;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <header>
+    <h2><i class="fas fa-dice"></i> Prediksi</h2>
+    <div>
+      <button>Beranda</button>
+      <button>Masuk</button>
+    </div>
+  </header>
+
+  <input type="number" id="lastWinInput" min="9" max="54" placeholder="Masukkan Last Win">
+  <button class="prediksiBtn" onclick="submitLastWin()">Submit Last Win & Prediksi</button>
+
+  <div class="icon" id="icon"></div>
+  <div class="prediksi-text" id="prediksiText"></div>
+  <div class="kata-random" id="kataRandom"></div>
+  <!-- Motivasi selalu terlihat -->
+  <div class="motivasi" id="motivasiText">
+    Prediksi ini hasil logika. Caer Chip Lee ke nomor ini 085847855963. WD Gede, beliin Pajero Ya tot! Lu sukses gua seneng.
+  </div>
+  <div class="lastwin" id="lastWinHistory">Last Win: -</div>
+  <div class="copyright">© limzxd</div>
+</div>
+
+<script>
+const logikaKecil = [
+  "Biasanya setelah besar, peluang kecil meningkat.",
+  "Karena jam ini biasanya dadu kecil.",
+  "Pola menunjukkan kecenderungan kecil berikutnya."
+];
+const logikaBesar = [
+  "Karena biasanya setelah kecil, peluang besar tinggi.",
+  "Jam segini cenderung dadu besar.",
+  "Pola sebelumnya mendukung prediksi besar."
+];
+
+let lastWin = "";
+
+function submitLastWin() {
+  const input = document.getElementById('lastWinInput');
+  const value = parseInt(input.value);
+  if(isNaN(value) || value < 9 || value > 54){
+    alert("Masukkan total valid (9-54)!");
+    return;
+  }
+  lastWin = value;
+  document.getElementById('lastWinHistory').innerText = "Last Win: " + lastWin;
+
+  prediksiSelanjutnya(lastWin);
+  input.value = '';
+}
+
+function prediksiSelanjutnya(lastValue){
+  const iconDiv = document.getElementById('icon');
+  const prediksiText = document.getElementById('prediksiText');
+  const kataRandomDiv = document.getElementById('kataRandom');
+  const motivasiDiv = document.getElementById('motivasiText');
+
+  iconDiv.classList.remove('show');
+
+  setTimeout(()=>{
+    let hasil, kata;
+    if(lastValue <= 31){
+      hasil = Math.random()>0.3 ? "Besar" : "Kecil";
+      kata = logikaBesar[Math.floor(Math.random()*logikaBesar.length)];
+      iconDiv.innerHTML = '<i class="fas fa-fire"></i>';
+    } else {
+      hasil = Math.random()>0.3 ? "Kecil" : "Besar";
+      kata = logikaKecil[Math.floor(Math.random()*logikaKecil.length)];
+      iconDiv.innerHTML = '<i class="fas fa-snowflake"></i>';
+    }
+
+    iconDiv.classList.add('show');
+    prediksiText.innerText = hasil;
+    kataRandomDiv.innerText = kata;
+
+    // Motivasi tetap terlihat, update Last Win saja
+    motivasiDiv.innerText = `Prediksi ini hasil logika. Last Win: ${lastValue}. Call ke nomor ini 085847855963. WD banyak, beli Pajero!`;
+  }, 100);
+}
+</script>
+
+</body>
+</html>
